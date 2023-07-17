@@ -17,7 +17,7 @@
     "storage",
     // "cookies",
     // "desktopCapture",
-    // "tabs",
+    "tabs",
     "activeTab",
     "scripting"
   ],

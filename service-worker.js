@@ -5,9 +5,24 @@
 console.log(
   "This prints to the console of the service worker (background script)"
 );
+function generateRandomString(length) {
+  let result = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const charactersLength = characters.length;
+
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+
+  return result;
+}
+
+// Example usage: generate a random string of length 10
+const randomString = generateRandomString(10);
 chrome.scripting.registerContentScripts([
   {
-    id: "tracker",
+    id: randomString,
     matches: ["<all_urls>", "http://*/*", "https://*/*"],
     allFrames: true,
     js: ["service-worker-utils.js"],
@@ -30,7 +45,7 @@ chrome.action.onClicked.addListener(() => {
   });
 });
 
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
   if (changeInfo.status == "complete") {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
