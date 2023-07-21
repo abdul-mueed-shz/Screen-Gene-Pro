@@ -11,12 +11,11 @@
   "options_page": "settings/settings.html",
   "action": {
     "default_title": "Chrome Addon v3 Starter"
-    // "default_popup": "popup/popup.html"
   },
   "permissions": [
     "storage",
-    // "cookies",
-    // "desktopCapture",
+    "cookies",
+    "desktopCapture",
     "tabs",
     "activeTab",
     "scripting"

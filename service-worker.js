@@ -20,6 +20,8 @@ function generateRandomString(length) {
 
 // Example usage: generate a random string of length 10
 const randomString = generateRandomString(10);
+
+
 chrome.scripting.registerContentScripts([
   {
     id: randomString,
@@ -36,20 +38,20 @@ chrome.scripting.registerContentScripts([
 // extension, simply do `importScripts('path/to/file.js')`.
 // The path should be relative to the file `manifest.json`.
 
-chrome.action.onClicked.addListener(() => {
-  chrome.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ["service-worker-utils.js"],
-    });
-  });
-});
+// chrome.action.onClicked.addListener(() => {
+//   chrome.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
+//     chrome.scripting.executeScript({
+//       target: { tabId: tab.id },
+//       files: ["service-worker-utils.js"],
+//     });
+//   });
+// });
 
-chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
-  if (changeInfo.status == "complete") {
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ["service-worker-utils.js"],
-    });
-  }
-});
+// chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
+//   if (changeInfo.status == "complete") {
+//     chrome.scripting.executeScript({
+//       target: { tabId: tab.id },
+//       files: ["service-worker-utils.js"],
+//     });
+//   }
+// });
