@@ -1,0 +1,90 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Extension name</title><link rel="stylesheet" type="text/css" href="../css/popup.css"><script type="text/javascript" src="../js/jquery.min.js"></script><script src="../js/plyr.js"></script><link rel="stylesheet" href="../css/plyr.css"><style>.screen-option {
+        margin-right: 30px;
+        cursor: pointer;
+        margin-left: 0px;
+        width: 70px;
+        height: 36px;
+        border: 1px solid #0e71e3;
+        background: #ffffff;
+        color: #0e71e3;
+        font-size: 15px;
+        border-radius: 4px;
+        font-size: 15px;
+      }
+
+      .screen-option:hover {
+        color: white !important;
+        background: #0e71e3aa !important;
+        border-color: #0e71e3aa !important;
+      }
+
+      .screen-option-active {
+        color: white;
+        background: #0e71e3;
+        border-color: #0e71e3;
+      }
+
+      .Screengene-pro-btn {
+        height: 40px;
+        width: 10vw;
+        margin: 10px;
+        color: black;
+        font-weight: bolder;
+        border: 2px solid rgb(26, 26, 26);
+        border-radius: 10px;
+      }
+
+      .Screengene-pro-btn:hover {
+        box-shadow: 3px 3px 5px #8b8b8b, -3px -3px 5px #8b8b8b;
+      }
+
+      .Screengene-pro-video {
+        height: 60%;
+        width: 60%;
+        display: inline-flex;
+        justify-content: center;
+      }
+
+      /* .plyr__controls {
+        background: none !important;
+      } */</style></head><body style="text-align: center"><div style="display: none; justify-content: center" id="loaderParentDiv"><div id="loaderDiv"></div><img id="loaderimg" src="../image/loading.svg" alt=""></div><div style="display: none" id="loader" class="view loader" view="loader"><center><img src="" id="loading-img"></center></div><div class="view" view="not-loggedin" style="display: none"><div class="header"><img src="" class="logo"></div><div class="login-noti-area"><p><span class="red-color">OPP's !</span> you must logged First <a class="link" id="check_login">Login now</a> If you don't have account then its easyy to create one <a class="link" id="check_login2">Create now</a></p></div><div><h2><strong>If you are already Logged In please refresh the page.</strong></h2></div><div class="footer"><p>&copy; 2021 mycompany.inc</p></div></div><div class="view" view="app" style="display: none"><div class="header"><img src="" class="logo app-logo"></div><div class="app-noti-area"><p id="note-pera"><span class="black-color">Note</span> To end the recording just click the chrome extension icon.</p></div><div class="app-area"><div id="main-audio"><span>Audio option</span> <select id="audio-option" value="system"><option value="system">System Audio</option><option value="mute">No Sound</option></select></div></div><div style="display: flex" class="app-area"><!-- <span class="padding-left-50">Language</span>
+        <select id="language-option" value="English" disabled="true">
+          <option value="English">English (US)</option>
+          <option value="German">German</option>
+        </select> --><!-- <button id="user-video">Video</button> --> <button value="buttonProp" id="start">Start Record</button> <button style="background-color: red; display: none" value="buttonProp" id="stop">Stop Record</button></div><div id="Screengene-pro-btn-div" style="display: flex; justify-content: center; margin-bottom: 20px"><button style="display: none" class="Screengene-pro-btn" id="upload">UPLOAD</button> <button style="display: none" class="Screengene-pro-btn" id="cancel">CANCEL</button></div><div style="margin: 5px 0px"><div class="Screengene-pro-video" style="width: 60%"><video controls crossorigin playsinline class="js-player" id="videoElement" style="border: 0px solid white;
+              border-radius: 10px !important;
+              outline: thick solid white;
+              display: none;"><source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4" type="video/mp4" size="1080"></video></div></div><br><div class="footer"><p>&copy; 2022 Demobites.com</p></div></div><!-- <div class="view" view="user-video">
+      <button id="back-to-popup">Back</button>
+      <div
+        id="Screengene-video"
+        class="Screengene-pro-video"
+        style="display: none"
+      >
+        <video
+          controls
+          crossorigin
+          playsinline
+          class="popup-js-player"
+          id="popup-videoElement"
+          style="border: 0px solid white; outline: thick solid white"
+        ></video>
+      </div>
+      <div class="video-source">
+        <div class="video-source-item">
+          <button id="btnDiv" type="button" class="icon-button">
+            <span class="material-icons"
+              ><img class="thumbnail-item" alt="thumbnail"
+            /></span>
+            <span class="icon-button__badge">
+              <div class="camera icon"></div>
+            </span>
+          </button>
+        </div>
+        <div class="video-source-item">00:02:00</div>
+        <div class="video-source-item">12-01-2023</div>
+        <div class="video-source-item">
+          <div title="copy link"><button>Copy Link</button></div>
+        </div>
+      </div>
+    </div> --><script src="../js/jquery.min.js"></script><script type="text/javascript" src="../js/popup.js"></script></body></html>
