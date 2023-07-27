@@ -43,3 +43,17 @@ chrome.action.onClicked.addListener(async (e) => {
       }, 100);
   }
 });
+
+chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
+  if (changeInfo.status == "complete") {
+    chrome.storage.local.get(["recordedTabId"]).then((res) => {
+      if (res.recordedTabId === tabId) {
+        console.log("RES RECORDED TAB ID", res.recordedTabId);
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          files: ["js/content.js"],
+        });
+      }
+    });
+  }
+});

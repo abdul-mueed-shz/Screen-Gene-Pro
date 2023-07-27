@@ -1,49 +1,52 @@
-let e = document.createElement("img");
-(e.id = "ss-ext-timer"),
-  (e.style.textAlign = "center"),
-  (e.style.position = "fixed"),
-  (e.style.zIndex = "2147483647"),
-  (e.style.fontSize = "100px"),
-  (e.style.fontWeight = "600"),
-  (e.style.color = "red"),
-  (e.style.borderRadius = "50%"),
-  (e.style.width = "150px"),
-  (e.style.height = "150px");
-let t = document.createElement("div");
-(t.id = "loaderDiv2"),
-  (t.style.position = "fixed"),
-  (t.style.width = "100vw"),
-  (t.style.height = "100vh"),
-  (t.style.background = "gray"),
-  (t.style.opacity = "0.8"),
-  (t.style.zIndex = "2147483646"),
-  (t.style.textAlign = "center"),
-  (t.style.top = "0"),
-  (t.style.left = "0"),
-  document.body.prepend(t),
-  document.body.prepend(e),
-  (e.style.top = (window.innerHeight - 150) / 2 + "px"),
-  (e.style.left = (window.innerWidth - 150) / 2 + "px");
-let o = 3,
-  n = setInterval(() => {
-    3 === o
-      ? ((document.getElementById("ss-ext-timer").src =
-          chrome.runtime.getURL("../image/3.png")),
-        (o -= 1))
-      : 2 === o
-      ? ((document.getElementById("ss-ext-timer").src =
-          chrome.runtime.getURL("../image/2.png")),
-        (o -= 1))
-      : 1 === o
-      ? ((document.getElementById("ss-ext-timer").src =
-          chrome.runtime.getURL("../image/1.png")),
-        (o -= 1))
-      : ((document.getElementById("loaderDiv2").style.display = "none"),
-        (document.getElementById("ss-ext-timer").style.display = "none"),
-        clearInterval(n));
-  }, 1e3);
-
 if (typeof clickTracker !== "function") {
+  chrome.storage.local.get(null, (result) => {
+    if (!result.rec) {
+      let e = document.createElement("img");
+      (e.id = "ss-ext-timer"),
+        (e.style.textAlign = "center"),
+        (e.style.position = "fixed"),
+        (e.style.zIndex = "2147483647"),
+        (e.style.fontSize = "100px"),
+        (e.style.fontWeight = "600"),
+        (e.style.color = "red"),
+        (e.style.borderRadius = "50%"),
+        (e.style.width = "150px"),
+        (e.style.height = "150px");
+      let t = document.createElement("div");
+      (t.id = "loaderDiv2"),
+        (t.style.position = "fixed"),
+        (t.style.width = "100vw"),
+        (t.style.height = "100vh"),
+        (t.style.background = "gray"),
+        (t.style.opacity = "0.8"),
+        (t.style.zIndex = "2147483646"),
+        (t.style.textAlign = "center"),
+        (t.style.top = "0"),
+        (t.style.left = "0"),
+        document.body.prepend(t),
+        document.body.prepend(e),
+        (e.style.top = (window.innerHeight - 150) / 2 + "px"),
+        (e.style.left = (window.innerWidth - 150) / 2 + "px");
+      let o = 3,
+        n = setInterval(() => {
+          3 === o
+            ? ((document.getElementById("ss-ext-timer").src =
+                chrome.runtime.getURL("../image/3.png")),
+              (o -= 1))
+            : 2 === o
+            ? ((document.getElementById("ss-ext-timer").src =
+                chrome.runtime.getURL("../image/2.png")),
+              (o -= 1))
+            : 1 === o
+            ? ((document.getElementById("ss-ext-timer").src =
+                chrome.runtime.getURL("../image/1.png")),
+              (o -= 1))
+            : ((document.getElementById("loaderDiv2").style.display = "none"),
+              (document.getElementById("ss-ext-timer").style.display = "none"),
+              clearInterval(n));
+        }, 1e3);
+    }
+  });
   let mousedown = false;
 
   // Create a new MutationObserver
@@ -114,7 +117,14 @@ if (typeof clickTracker !== "function") {
     let currentMinute = currentTime.getMinutes();
     return { currentHour, currentMinute };
   };
-
+  const currTime = () => {
+    let { currentHour, currentMinute } = getCurrentTime();
+    currentMinute =
+      currentMinute < 10
+        ? (currentMinute = "0" + currentMinute)
+        : currentMinute;
+    return currentHour + ":" + currentMinute;
+  };
   const getWindowToScreenCoordinates = async (event) => {
     let screenX = event.screenX;
     let screenY = event.screenY;
@@ -124,15 +134,42 @@ if (typeof clickTracker !== "function") {
 
     return { screenX, screenY, windowX, windowY };
   };
+  // Define the debounce function
+  function debounce(func, delay) {
+    let timer;
+    return function (...args) {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        func.apply(this, args);
+      }, delay);
+    };
+  }
+
+  // Your original scroll event handler
+  const handleScroll = (event) => {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollLeft =
+      window.pageXOffset || document.documentElement.scrollLeft;
+
+    const clickData = {
+      type: event.type,
+      time: currTime(), // Make sure you have the `currTime` function defined.
+      url: window.location.href,
+      scrollCoordinates: {
+        top: scrollTop,
+        left: scrollLeft,
+      },
+    };
+    chrome.storage?.local
+      .get(["trackingData"])
+      .then((res) => storeTrackingInfo(res, clickData));
+  };
+
+  // Debounce the scroll event handler to be called after 500 milliseconds of scroll inactivity
+  const debouncedScrollHandler = debounce(handleScroll, 500);
 
   const clickTracker = async (event) => {
     const { windowX, windowY } = await getWindowToScreenCoordinates(event);
-
-    let { currentHour, currentMinute } = getCurrentTime();
-    currentMinute =
-      currentMinute < 10
-        ? (currentMinute = "0" + currentMinute)
-        : currentMinute;
 
     const clickData = {
       type: event.type,
@@ -140,7 +177,7 @@ if (typeof clickTracker !== "function") {
         x: windowX,
         y: windowY,
       },
-      time: currentHour + ":" + currentMinute,
+      time: currTime(),
       url: window.location.href,
     };
 
@@ -180,7 +217,6 @@ if (typeof clickTracker !== "function") {
       .then((res) => storeTrackingInfo(res, clickData))
       .catch((err) => console.log(err));
   };
-
   document.addEventListener("mousedown", (event) => {
     mousedown = true;
     clickTracker(event);
@@ -195,15 +231,9 @@ if (typeof clickTracker !== "function") {
     }
   });
   window.onload = function () {
-    let { currentHour, currentMinute } = getCurrentTime();
-    currentMinute =
-      currentMinute < 10
-        ? (currentMinute = "0" + currentMinute)
-        : currentMinute;
-
     const clickData = {
       type: event.type,
-      time: currentHour + ":" + currentMinute,
+      time: currTime(),
       url: window.location.href,
     };
 
@@ -211,7 +241,5 @@ if (typeof clickTracker !== "function") {
       .get(["trackingData"])
       .then((res) => storeTrackingInfo(res, clickData));
   };
+  window.addEventListener("scroll", debouncedScrollHandler);
 }
-
-alert("DOCUMENT");
-console.log(document);

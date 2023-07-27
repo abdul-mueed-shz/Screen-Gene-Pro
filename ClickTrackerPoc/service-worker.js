@@ -21,7 +21,6 @@ function generateRandomString(length) {
 // Example usage: generate a random string of length 10
 const randomString = generateRandomString(10);
 
-
 chrome.scripting.registerContentScripts([
   {
     id: randomString,
