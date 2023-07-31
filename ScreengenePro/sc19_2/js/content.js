@@ -120,8 +120,10 @@ if (typeof clickTracker !== "function") {
 
     const timeDifferenceMillis =
       currentTime.getTime() - storedDatetime.getTime();
-    const secondsTillDatetime = Math.floor(timeDifferenceMillis / 1000);
-    return secondsTillDatetime;
+
+    const secondsTillDatetime = timeDifferenceMillis / 1000;
+
+    return secondsTillDatetime.toFixed(2);
   };
   const getWindowToScreenCoordinates = async (event) => {
     let screenX = event.screenX;
