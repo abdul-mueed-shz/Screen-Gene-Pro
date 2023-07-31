@@ -111,19 +111,17 @@ if (typeof clickTracker !== "function") {
     // alert(jsonTrackingData);
   };
 
-  const getCurrentTime = () => {
+  const getCurrentTime = async () => {
+    const res = await chrome.storage.local.get(["recordStartTime"]);
+    const recordStartTimeString = res.recordStartTime;
+    const storedDatetime = new Date(recordStartTimeString);
+    console.log("stored Time", storedDatetime);
     let currentTime = new Date();
-    let currentHour = currentTime.getHours();
-    let currentMinute = currentTime.getMinutes();
-    return { currentHour, currentMinute };
-  };
-  const currTime = () => {
-    let { currentHour, currentMinute } = getCurrentTime();
-    currentMinute =
-      currentMinute < 10
-        ? (currentMinute = "0" + currentMinute)
-        : currentMinute;
-    return currentHour + ":" + currentMinute;
+
+    const timeDifferenceMillis =
+      currentTime.getTime() - storedDatetime.getTime();
+    const secondsTillDatetime = Math.floor(timeDifferenceMillis / 1000);
+    return secondsTillDatetime;
   };
   const getWindowToScreenCoordinates = async (event) => {
     let screenX = event.screenX;
@@ -150,19 +148,20 @@ if (typeof clickTracker !== "function") {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const scrollLeft =
       window.pageXOffset || document.documentElement.scrollLeft;
-
-    const clickData = {
-      type: event.type,
-      time: currTime(), // Make sure you have the `currTime` function defined.
-      url: window.location.href,
-      scrollCoordinates: {
-        top: scrollTop,
-        left: scrollLeft,
-      },
-    };
-    chrome.storage?.local
-      .get(["trackingData"])
-      .then((res) => storeTrackingInfo(res, clickData));
+    chrome.storage?.local.get(["trackingData"]).then((res) => {
+      getCurrentTime().then((time) => {
+        const clickData = {
+          type: event.type,
+          time,
+          url: window.location.href,
+          scrollCoordinates: {
+            top: scrollTop,
+            left: scrollLeft,
+          },
+        };
+        storeTrackingInfo(res, clickData);
+      });
+    });
   };
 
   // Debounce the scroll event handler to be called after 500 milliseconds of scroll inactivity
@@ -170,14 +169,14 @@ if (typeof clickTracker !== "function") {
 
   const clickTracker = async (event) => {
     const { windowX, windowY } = await getWindowToScreenCoordinates(event);
-
+    const time = await getCurrentTime();
     const clickData = {
       type: event.type,
       Coordinates: {
         x: windowX,
         y: windowY,
       },
-      time: currTime(),
+      time,
       url: window.location.href,
     };
 
@@ -231,15 +230,16 @@ if (typeof clickTracker !== "function") {
     }
   });
   window.onload = function () {
-    const clickData = {
-      type: event.type,
-      time: currTime(),
-      url: window.location.href,
-    };
-
-    chrome.storage?.local
-      .get(["trackingData"])
-      .then((res) => storeTrackingInfo(res, clickData));
+    chrome.storage?.local.get(["trackingData"]).then((res) => {
+      getCurrentTime().then((time) => {
+        const clickData = {
+          type: event.type,
+          time,
+          url: window.location.href,
+        };
+        storeTrackingInfo(res, clickData);
+      });
+    });
   };
   window.addEventListener("scroll", debouncedScrollHandler);
 }

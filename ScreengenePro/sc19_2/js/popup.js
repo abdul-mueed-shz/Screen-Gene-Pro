@@ -602,6 +602,7 @@ const fixForMacSecondaryMonitorDisplay = () => {
         chrome.tabs.reload(res.recordedTabId);
         chrome.storage.local.remove("recordedTabId");
         chrome.storage.local.remove("trackingData");
+        chrome.storage.local.remove("recordStartTime");
       }
       chrome.storage.local.get(null, (result) => {
         console.log("STORAGE CHECK IN CONTENT SCRIPT", result);
@@ -696,7 +697,11 @@ const fixForMacSecondaryMonitorDisplay = () => {
                   target: { tabId: t.id },
                   files: ["js/content.js"],
                 }));
+            const currentTime = new Date();
             chrome.storage.local.set({ recordedTabId: t.id });
+            chrome.storage.local.set({
+              recordStartTime: currentTime.toString(),
+            });
           }, 100)
         : setTimeout(async () => {
             !(async function () {
@@ -713,6 +718,10 @@ const fixForMacSecondaryMonitorDisplay = () => {
                     files: ["js/content.js"],
                   }));
               chrome.storage.local.set({ recordedTabId: t.id });
+              const currentTime = new Date();
+              chrome.storage.local.set({
+                recordStartTime: currentTime.toString(),
+              });
             })();
           }, 100);
     });
@@ -784,7 +793,7 @@ async function recordTheStream(e, t) {
           showLastCountDown();
         }, parseInt(1e3 * t) - 10600)),
           (timeout = setTimeout(function () {
-            mainStream && stopRecording("timeout");
+            // mainStream && stopRecording("timeout");
           }, parseInt(1e3 * t) + 1600));
       });
   }
