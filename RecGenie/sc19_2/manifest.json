@@ -1,9 +1,16 @@
 {
   "manifest_version": 3,
-  "name": "Screengene pro",
+  "name": "RecGenie",
   "description": "Short desciption few word test some feature",
   "version": "1.0",
-  "permissions": ["storage", "cookies", "desktopCapture", "tabs","activeTab", "scripting"],
+  "permissions": [
+    "storage",
+    "cookies",
+    "desktopCapture",
+    "tabs",
+    "activeTab",
+    "scripting"
+  ],
   "host_permissions": ["<all_urls>", "http://*/*", "https://*/*"],
   "icons": {
     "48": "image/main.png"
