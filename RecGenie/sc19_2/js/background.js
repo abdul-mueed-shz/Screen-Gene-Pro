@@ -51,7 +51,7 @@ const getCurrentTime = async () => {
   let currentTime = new Date();
 
   const timeDifferenceMillis =
-    currentTime.getTime() - storedDatetime.getTime();
+    (currentTime.getTime() - storedDatetime.getTime())-3;
 
   const secondsTillDatetime = timeDifferenceMillis / 1000;
 
