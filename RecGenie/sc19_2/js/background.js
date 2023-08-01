@@ -50,8 +50,7 @@ const getCurrentTime = async () => {
   const storedDatetime = new Date(recordStartTimeString);
   let currentTime = new Date();
 
-  const timeDifferenceMillis =
-    (currentTime.getTime() - storedDatetime.getTime())-3;
+  const timeDifferenceMillis = currentTime.getTime() - storedDatetime.getTime();
 
   const secondsTillDatetime = timeDifferenceMillis / 1000;
 
@@ -71,9 +70,9 @@ chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
             const trackingData = JSON.parse(result.trackingData);
             trackingData.push(clickData);
             const jsonTrackingData = JSON.stringify(trackingData);
-            chrome.storage.local.set({ trackingData: jsonTrackingData })
+            chrome.storage.local.set({ trackingData: jsonTrackingData });
             console.log(trackingData);
-            chrome.runtime.sendMessage({ msg: "check" })
+            chrome.runtime.sendMessage({ msg: "check" });
           });
         }
       });

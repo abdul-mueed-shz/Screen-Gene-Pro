@@ -681,6 +681,15 @@ const fixForMacSecondaryMonitorDisplay = () => {
       clearTimeout(ltimeout),
       (language = "");
   },
+  setRecordingDate = () => {
+    const setRecTimeoutId = setTimeout(() => {
+      const currentTime = new Date();
+      chrome.storage.local.set({
+        recordStartTime: currentTime.toString(),
+      });
+      clearInterval(setRecTimeoutId);
+    }, 3e3);
+  },
   appendTimer = async () => {
     chrome.runtime.getPlatformInfo(function (t) {
       "mac" === t.os
@@ -697,11 +706,8 @@ const fixForMacSecondaryMonitorDisplay = () => {
                   target: { tabId: t.id },
                   files: ["js/content.js"],
                 }));
-            const currentTime = new Date();
             chrome.storage.local.set({ recordedTabId: t.id });
-            chrome.storage.local.set({
-              recordStartTime: currentTime.toString(),
-            });
+            setRecordingDate();
           }, 100)
         : setTimeout(async () => {
             !(async function () {
@@ -718,10 +724,7 @@ const fixForMacSecondaryMonitorDisplay = () => {
                     files: ["js/content.js"],
                   }));
               chrome.storage.local.set({ recordedTabId: t.id });
-              const currentTime = new Date();
-              chrome.storage.local.set({
-                recordStartTime: currentTime.toString(),
-              });
+              setRecordingDate();
             })();
           }, 100);
     });
