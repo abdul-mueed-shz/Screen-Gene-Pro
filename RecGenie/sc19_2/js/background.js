@@ -44,9 +44,39 @@ chrome.action.onClicked.addListener(async (e) => {
   }
 });
 
+const getCurrentTime = async () => {
+  const res = await chrome.storage.local.get(["recordStartTime"]);
+  const recordStartTimeString = res.recordStartTime;
+  const storedDatetime = new Date(recordStartTimeString);
+  let currentTime = new Date();
+
+  const timeDifferenceMillis =
+    currentTime.getTime() - storedDatetime.getTime();
+
+  const secondsTillDatetime = timeDifferenceMillis / 1000;
+
+  return secondsTillDatetime.toFixed(2);
+};
 chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
   if (changeInfo.status == "complete") {
     chrome.storage.local.get(["recordedTabId"]).then((res) => {
+      chrome.storage?.local.get(["trackingData"]).then((result) => {
+        if (result.trackingData) {
+          getCurrentTime().then((time) => {
+            const clickData = {
+              type: "load",
+              time,
+              url: tab.url,
+            };
+            const trackingData = JSON.parse(result.trackingData);
+            trackingData.push(clickData);
+            const jsonTrackingData = JSON.stringify(trackingData);
+            chrome.storage.local.set({ trackingData: jsonTrackingData })
+            console.log(trackingData);
+            chrome.runtime.sendMessage({ msg: "check" })
+          });
+        }
+      });
       if (res.recordedTabId === tabId) {
         console.log("RES RECORDED TAB ID", res.recordedTabId);
         chrome.scripting.executeScript({

@@ -115,7 +115,6 @@ if (typeof clickTracker !== "function") {
     const res = await chrome.storage.local.get(["recordStartTime"]);
     const recordStartTimeString = res.recordStartTime;
     const storedDatetime = new Date(recordStartTimeString);
-    console.log("stored Time", storedDatetime);
     let currentTime = new Date();
 
     const timeDifferenceMillis =
@@ -231,7 +230,7 @@ if (typeof clickTracker !== "function") {
       clickTracker(event);
     }
   });
-  window.onload = function () {
+  window.onload = async function (event) {
     chrome.storage?.local.get(["trackingData"]).then((res) => {
       getCurrentTime().then((time) => {
         const clickData = {
