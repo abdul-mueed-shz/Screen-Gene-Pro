@@ -160,18 +160,19 @@ const postVideoIntoS3Bucket = (e, t, o, n) => {
         lastModified: Date.now(),
       }),
       n = new FormData();
-    return (
-      n.append("key", t.uuid),
-      n.append("acl", "public-read"),
-      n.append("X-Amz-Credential", t["x-amz-credential"]),
-      n.append("X-Amz-Date", t.iso_date),
-      n.append("X-Amz-Algorithm", "AWS4-HMAC-SHA256"),
-      n.append("Policy", t.policy),
-      n.append("X-Amz-Signature", t["x-amz-Signature"]),
-      n.append("success_action_redirect", t.success_url),
-      n.append("file", o),
-      n
-    );
+    n.append("key", t.uuid);
+    n.append("acl", "public-read");
+    n.append("X-Amz-Credential", t["x-amz-credential"]);
+    n.append("X-Amz-Date", t.iso_date);
+    n.append("X-Amz-Algorithm", "AWS4-HMAC-SHA256");
+    n.append("Policy", t.policy);
+    n.append("X-Amz-Signature", t["x-amz-Signature"]);
+    n.append("success_action_redirect", t.success_url);
+    n.append("file", o);
+    for (let [key, value] of n.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+    return n;
   };
 async function getS3Info(e) {
   return await $.ajax({
@@ -183,10 +184,12 @@ async function getS3Info(e) {
 const uploadVideo = (e, t, o) => {
     getS3Info(o)
       .then((o) => {
+        debugger;
         if (o && o.bucket) {
           let t = generateForm(e, o),
             a = `http://${o.bucket}.s3.amazonaws.com/`;
           o.success_url;
+          debugger;
           (n = a),
             (i = t),
             $.ajax({
@@ -428,6 +431,8 @@ const getUserMediaVideoSystemMute = (e, t) => {
               mandatory: {
                 chromeMediaSource: "desktop",
                 chromeMediaSourceId: e,
+                minWidth: 640,
+                minHeight: 480,
                 maxWidth: 1920,
                 maxHeight: 1080,
                 maxFrameRate: 60,
